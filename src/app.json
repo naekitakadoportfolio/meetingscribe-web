@@ -1,0 +1,6 @@
+{"title":"MeetingScribe","brand":"🎙 MEETINGSCRIBE","theme":"silver","storageKey":"meetingscribeDemo","footer":"Built",
+"desc":"MeetingScribe web companion: meeting notes, decisions and action items from local transcription.",
+"nav":[["dashboard","🏠 Dashboard"],["upcoming","📅 Upcoming"],["library","📚 Meeting library"],["new","✍️ New notes"],["actions","✅ Action items"],["desktop","🖥 Desktop app"],["settings","⚙️ Settings"]],
+"sidebarExtra":"<div class='who'><p class='muted' style='margin:0'>🔒 Local-first. Nothing leaves your device.</p></div>",
+"css":"code{background:var(--blush);padding:1px 5px;border-radius:4px}",
+"appJs":"src/app.js"}

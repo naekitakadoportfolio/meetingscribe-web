@@ -1,0 +1,178 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MeetingScribe · Demo</title><meta name="description" content="MeetingScribe web companion: meeting notes, decisions and action items from local transcription.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+:root{--bg1:#F4F6F9;--bg2:#E6EAF0;--ink:#0F2A44;--mauve:#5B6B7C;--cocoa:#0F2A44;--sky:#C0C8D2;--card:rgba(255,255,255,.85);--line:rgba(15,42,68,.12);--blush:rgba(192,200,210,.28);--rose:#C0C8D2;--ok-bg:#DDF1E4;--ok:#1E5A36;--warn-bg:#FCEBC8;--warn:#7A4E12;--bad-bg:#F8D7DA;--bad:#8A2C3A}
+[data-theme=dark]{--bg1:#0A1726;--bg2:#13263B;--ink:#E8EDF3;--mauve:#A3AFBD;--card:rgba(19,38,59,.75);--line:rgba(192,200,210,.18);--blush:rgba(192,200,210,.10);--cocoa:#C0C8D2;--ok-bg:rgba(46,160,90,.2);--ok:#8FE0AE;--warn-bg:rgba(230,160,40,.2);--warn:#F5C97A;--bad-bg:rgba(220,80,90,.2);--bad:#F5A3AC}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,'Segoe UI',system-ui,sans-serif;color:var(--ink);background:linear-gradient(160deg,var(--bg1),var(--bg2));background-attachment:fixed;min-height:100vh}
+.wrap{max-width:1120px;margin:0 auto;padding:20px 16px 48px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.topbar .brand{font-weight:700;letter-spacing:.08em;font-size:13px;color:var(--mauve)}
+.hero{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:18px;padding:22px 24px;box-shadow:0 8px 30px rgba(10,30,45,.08)}
+.tag{display:inline-block;background:var(--blush);color:var(--cocoa);font-size:11px;letter-spacing:.14em;font-weight:700;border-radius:6px;padding:4px 10px}
+h1{color:var(--ink);font-size:clamp(24px,4vw,34px);margin:10px 0 6px;font-weight:700}.hero p{margin:0;max-width:720px;color:var(--mauve)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 6px 24px rgba(10,30,45,.06)}
+h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mauve);margin:0 0 12px;font-weight:700}
+label{font-size:13px;font-weight:600;color:var(--mauve);display:block;margin:10px 0 4px}
+select,textarea,input{width:100%;font:inherit;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:rgba(255,255,255,.7);color:#14384E}[data-theme=dark] select,[data-theme=dark] textarea,[data-theme=dark] input{background:rgba(255,255,255,.08);color:var(--ink)}
+input[type=range],input[type=checkbox]{accent-color:#0F2A44}textarea{min-height:120px;resize:vertical}
+button{background:#0F2A44;color:#fff;border:0;border-radius:10px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer;margin-top:12px}button:hover{filter:brightness(1.1)}
+button.ghost{background:transparent;color:var(--cocoa);border:1px solid var(--line)}
+.pill{display:inline-block;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;margin:2px}
+.high{background:var(--bad-bg);color:var(--bad)}.medium{background:var(--warn-bg);color:var(--warn)}.low{background:var(--ok-bg);color:var(--ok)}
+ul{padding-left:18px;margin:6px 0}li{margin:4px 0}li::marker{color:var(--sky)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}th{color:var(--mauve);font-weight:600}
+.kpi{display:flex;gap:10px;flex-wrap:wrap}.kpi div{flex:1;min-width:120px;background:var(--blush);border:1px solid var(--line);border-radius:12px;padding:12px}.kpi b{display:block;font-size:24px;color:var(--cocoa)}
+pre{background:#0B1E2A;color:#CFE8F4;border-radius:10px;padding:12px;font-size:12px;overflow:auto;max-height:320px}
+footer{text-align:center;font-size:12px;color:var(--mauve);margin-top:28px}a{color:var(--cocoa)}.muted{color:var(--mauve);font-size:13px}
+.hero:after{display:none}
+</style><style>
+.shell{display:grid;grid-template-columns:220px 1fr;gap:16px;margin-top:4px}@media(max-width:820px){.shell{grid-template-columns:1fr}}
+.side{background:var(--card);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:16px;padding:14px;height:fit-content;position:sticky;top:12px}
+.side a{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:10px;color:var(--ink);text-decoration:none;font-weight:500;margin:2px 0}
+.side a.on{background:var(--cocoa);color:#fff}.side a:hover:not(.on){background:var(--blush)}
+.badge{background:#C0392B;color:#fff;border-radius:99px;font-size:11px;padding:1px 7px}
+.who{border-top:1px solid var(--line);margin-top:12px;padding-top:12px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.cal .h{font-size:11px;font-weight:700;color:var(--mauve);text-align:center;letter-spacing:.08em}
+.day{min-height:92px;border:1px solid var(--line);border-radius:10px;padding:6px;background:rgba(255,255,255,.35);cursor:pointer;font-size:12px;overflow:hidden}
+[data-theme=dark] .day{background:rgba(255,255,255,.04)}.day:hover{outline:2px solid var(--sky)}.day.off{opacity:.4}.day.we{background:var(--blush)}.day.today{outline:2px solid var(--cocoa)}.day.sel{background:rgba(29,76,147,.18)}
+.ev{border-radius:5px;padding:1px 5px;margin-top:3px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
+.Vacation{background:#1D4C93}.Sick{background:#C27C0E}.Personal{background:#2E8B57}.Protected{background:#6B7A86}.Holiday{background:#89CDE7;color:#14384E}.pending{opacity:.6;border:1px dashed #fff}
+.toast{position:fixed;right:18px;bottom:18px;background:var(--cocoa);color:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transform:translateY(10px);transition:.25s;z-index:9;max-width:340px}.toast.show{opacity:1;transform:none}
+.modal{position:fixed;inset:0;background:rgba(10,30,45,.45);display:none;align-items:center;justify-content:center;z-index:8;padding:16px}.modal.show{display:flex}.modal .card{max-width:480px;width:100%;background:var(--bg1)}
+.row{display:flex;gap:10px}.row>*{flex:1}.legend span{margin-right:10px;font-size:12px}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
+.bar{background:var(--blush);border-radius:99px;height:8px;margin-top:4px}.bar div{height:8px;border-radius:99px;background:var(--cocoa)}
+</style><style>code{background:var(--blush);padding:1px 5px;border-radius:4px}</style></head><body><div class="wrap">
+<div class="topbar"><span class="brand">🎙 MEETINGSCRIBE · DEMO</span><span><button class="ghost" style="margin:0;padding:6px 12px" onclick="resetAll()">↺ Reset demo data</button> <button class="ghost" id="themeBtn" style="margin:0;padding:6px 12px" onclick="toggleTheme()">🌙 Dark</button></span></div>
+<div class="shell"><nav class="side"><a href="#/dashboard" data-r="dashboard">🏠 Dashboard <span class="badge" data-b="dashboard"></span></a>
+<a href="#/upcoming" data-r="upcoming">📅 Upcoming <span class="badge" data-b="upcoming"></span></a>
+<a href="#/library" data-r="library">📚 Meeting library <span class="badge" data-b="library"></span></a>
+<a href="#/new" data-r="new">✍️ New notes <span class="badge" data-b="new"></span></a>
+<a href="#/actions" data-r="actions">✅ Action items <span class="badge" data-b="actions"></span></a>
+<a href="#/desktop" data-r="desktop">🖥 Desktop app <span class="badge" data-b="desktop"></span></a>
+<a href="#/settings" data-r="settings">⚙️ Settings <span class="badge" data-b="settings"></span></a><div class='who'><p class='muted' style='margin:0'>🔒 Local-first. Nothing leaves your device.</p></div></nav><main id="view"></main></div>
+<div class="modal" id="modal" onclick="if(event.target==this)closeM()"><div class="card" id="mbody"></div></div><div class="toast" id="toast"></div>
+<footer>Built by <b>Nae Kitakado</b>, AI Automation Consultant · <a href="https://github.com/naekitakadoportfolio/meetingscribe-web">Source</a> · <a href="https://www.linkedin.com/in/nae-k-203194265">LinkedIn</a><br>All data is fictional. Changes are saved in your browser only.</footer></div>
+<script>
+const TD=new Date();const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;const T0=iso(TD);const addD=(k,n)=>{const d=new Date(k+"T00:00");d.setDate(d.getDate()+n);return iso(d)};
+const fd=k=>new Date(k+"T00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
+const TR1=`Priya: Thanks everyone. Goal today is to lock the Q1 onboarding plan.
+Marcus: The welcome email sequence is drafted. I will send it to legal by Friday.
+Priya: Great. Are we still blocked on the help-center articles?
+Lena: Yes, two are missing screenshots. I will update them by Wednesday.
+Priya: We agreed to launch the new checklist on January 15.
+Marcus: Decided: we drop the video tour for now and revisit in February.
+Lena: Action item for Priya: confirm the budget for the in-app guide tool.
+Priya: Sounds good. Who owns the metrics dashboard?
+Marcus: I will build the activation dashboard by next Monday.`;
+const TR2=`Jordan: Quick sync on the vendor renewal.
+Ana: Current contract ends December 31. Usage is down 30 percent.
+Jordan: We decided to negotiate a smaller tier instead of renewing as is.
+Ana: I will pull the last 6 months of usage by Thursday.
+Jordan: Can we ask for monthly billing?
+Ana: Todo: draft the negotiation email for Jordan to review.
+Jordan: Agreed. Let's reconvene next Tuesday.`;
+const TR3=`Sam: Weekly creative standup. Three ads are in QA.
+Kai: The holiday cut needs new captions. I will fix them by tomorrow.
+Sam: Any risks for the launch?
+Kai: Music licensing is still pending.
+Sam: Action: Sam to follow up with the licensing team by Friday.
+Mei: We agreed the thumbnail A/B test runs for one week.`;
+const TR4=`Dana: Interview debrief for the operations coordinator role.
+Rob: Strong process thinking, good automation examples.
+Dana: Concern: limited experience with our CRM.
+Rob: We decided to move her to the final round.
+Dana: I will schedule the final interview by Wednesday.
+Rob: Should we add a short take-home task?
+Dana: Agreed, Rob will write the task brief by Monday.`;
+function parse(tr){const turns=tr.split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{const m=l.match(/^([A-Z][\w .'-]{0,24}):\s*(.*)$/);return m?{sp:m[1],tx:m[2]}:{sp:"Speaker",tx:l}});
+ const acts=[],dec=[],qs=[];turns.forEach(t=>{const s=t.tx;
+  if(/\?$/.test(s))qs.push({sp:t.sp,tx:s});
+  if(/\b(decided|agreed|we agreed|decision)\b/i.test(s))dec.push(s.replace(/^(decided|agreed)[:,]?\s*/i,""));
+  if(/\b(i will|i'll|will\b|action( item)?|todo|to-do|by (mon|tues|wednes|thurs|fri|satur|sun)day|by (tomorrow|next \w+|friday|eod))/i.test(s)&&!/\?$/.test(s)){
+   let owner=t.sp;const mo=s.match(/(?:for|:)\s*([A-Z][a-z]+)\b[:,]?/)||s.match(/^(?:Action:\s*)?([A-Z][a-z]+) (?:to|will)\b/);if(mo&&!/^(I|We|Action|Todo|Decided|Yes)$/.test(mo[1]))owner=mo[1];
+   const due=(s.match(/by ([A-Za-z]+(?: [A-Za-z]+)?)/i)||[])[1]||"";acts.push({t:s.replace(/^(action( item)?( for \w+)?|todo)[:,]?\s*/i,""),owner,due,done:false})}});
+ const stop=new Set("the a an and or to of for in on is are we i it be by that this with will our as at us can lets let's so up just now still need new next what who any yes all".split(" "));
+ const f={};turns.forEach(t=>t.tx.toLowerCase().match(/[a-z]{4,}/g)?.forEach(w=>{if(!stop.has(w))f[w]=(f[w]||0)+1}));
+ const kw=Object.entries(f).sort((a,b)=>b[1]-a[1]).slice(0,6).map(x=>x[0]);
+ const sp=[...new Set(turns.map(t=>t.sp))];
+ const summary=`${sp.length} participants (${sp.join(", ")}) discussed ${kw.slice(0,3).join(", ")}. ${dec.length} decision${dec.length==1?"":"s"} made and ${acts.length} action item${acts.length==1?"":"s"} assigned.`;
+ return{turns,acts,dec,qs,kw,summary,sp}}
+function mk(id,title,date,time,tags,tr,src){const p=parse(tr);return{id,title,date,time,tags,src:src||"Zoom",dur:Math.max(8,p.turns.length*3),tr,...p}}
+function SEED(){return{nid:5,me:"Priya",remindMin:10,autoNotes:true,
+ meetings:[mk(1,"Q1 onboarding planning",addD(T0,-1),"10:00",["product","planning"],TR1,"Zoom"),mk(2,"Vendor renewal sync",addD(T0,-2),"14:30",["finance","vendors"],TR2,"Google Meet"),mk(3,"Creative standup",addD(T0,-3),"09:00",["creative","weekly"],TR3,"Zoom"),mk(4,"Interview debrief · Ops coordinator",addD(T0,-5),"16:00",["hiring"],TR4,"Teams")],
+ upcoming:[{id:101,title:"Leadership weekly",date:T0,time:"15:00",src:"Zoom",remind:true},{id:102,title:"Client kickoff · Northbay",date:addD(T0,1),time:"09:30",src:"Google Meet",remind:true},{id:103,title:"1:1 with Marcus",date:addD(T0,2),time:"11:00",src:"Zoom",remind:false}],log:[]}}
+const M=id=>S.meetings.find(m=>m.id==+id);
+const allActs=()=>S.meetings.flatMap(m=>m.acts.map((a,i)=>({...a,mid:m.id,i,mt:m.title})));
+const tagP=t=>`<span class="pill" style="background:var(--blush);color:var(--cocoa)">#${esc(t)}</span>`;
+const V={};
+V.dashboard=()=>{const up=S.upcoming.filter(u=>u.date>=T0).sort((a,b)=>(a.date+a.time)<(b.date+b.time)?-1:1),open=allActs().filter(a=>!a.done);
+ return`<div class="hero"><span class="tag">MEETINGSCRIBE · WEB COMPANION</span><h1>Your meetings, already written up</h1><p>The desktop app records and transcribes on your computer. This page shows the notes, decisions and action items it produces.</p></div>
+ <div class="card" style="margin-top:16px"><div class="kpi"><div><b>${S.meetings.length}</b>meetings captured</div><div><b>${open.length}</b>open action items</div><div><b>${up.length}</b>upcoming</div><div><b>${S.meetings.reduce((a,m)=>a+m.dur,0)}</b>minutes transcribed</div></div></div>
+ <div class="grid"><div class="card"><h2>Next up</h2>${up.slice(0,4).map(u=>`<div style="padding:6px 0;border-bottom:1px solid var(--line)">🕒 <b>${esc(u.title)}</b><br><span class="muted">${fd(u.date)} · ${u.time} · ${u.src} ${u.remind?"· 🔔 "+S.remindMin+" min before":""}</span></div>`).join("")||"<p class='muted'>Nothing scheduled.</p>"}
+ <h2 style="margin-top:14px">Recent notes</h2>${S.meetings.slice().sort((a,b)=>a.date<b.date?1:-1).slice(0,3).map(m=>`<div style="padding:5px 0"><a href="#/meeting?id=${m.id}">📝 ${esc(m.title)}</a> <span class="muted">${fd(m.date)}</span></div>`).join("")}</div>
+ <div class="card"><h2>Open action items</h2>${open.slice(0,7).map(a=>`<label style="display:flex;gap:8px;align-items:flex-start;font-weight:500;color:var(--ink)"><input type="checkbox" style="width:auto;margin-top:3px" onchange="doneA(${a.mid},${a.i},this.checked)"><span>${esc(a.t)}<br><span class="muted">${esc(a.owner)}${a.due?" · due "+esc(a.due):""} · ${esc(a.mt)}</span></span></label>`).join("")||"<p class='muted'>All done 🎉</p>"}<button class="ghost" onclick="go('actions')">Open board</button></div></div>`};
+function doneA(mid,i,v){M(mid).acts[i].done=v;L(`${v?"Completed":"Reopened"} action: ${M(mid).acts[i].t}`);if(v)toast("Action item done ✓");route()}
+V.upcoming=()=>{const up=S.upcoming.slice().sort((a,b)=>(a.date+a.time)<(b.date+b.time)?-1:1);
+ return`<div class="grid"><div class="card"><h2>Upcoming meetings</h2><table><tr><th>When</th><th>Meeting</th><th>Platform</th><th>Reminder</th><th></th></tr>${up.map(u=>`<tr><td>${fd(u.date)}<br><span class="muted">${u.time}</span></td><td>${esc(u.title)}</td><td>${u.src}</td><td><input type="checkbox" style="width:auto" ${u.remind?"checked":""} onchange="S.upcoming.find(x=>x.id==${u.id}).remind=this.checked;save()"></td><td><button class="ghost" style="margin:0;padding:3px 8px" onclick="S.upcoming=S.upcoming.filter(x=>x.id!=${u.id});route()">✕</button></td></tr>`).join("")}</table></div>
+ <div class="card"><h2>Add meeting</h2><label>Title</label><input id="ut" placeholder="e.g. Design review"><div class="row"><div><label>Date</label><input id="ud" type="date" value="${T0}"></div><div><label>Time</label><input id="uh" type="time" value="13:00"></div></div><label>Platform</label><select id="us"><option>Zoom</option><option>Google Meet</option><option>Teams</option><option>In person</option></select><button onclick="addU()">Add meeting</button>
+ <h2 style="margin-top:16px">Import from calendar (.ics)</h2><textarea id="ics" style="min-height:90px;font-family:monospace;font-size:12px" placeholder="Paste .ics text here">BEGIN:VEVENT
+SUMMARY:Budget review
+DTSTART:${addD(T0,3).replace(/-/g,"")}T140000
+END:VEVENT</textarea><button class="ghost" onclick="impICS()">Import events</button></div></div>`};
+function addU(){const t=$("ut").value.trim();if(!t)return toast("Give the meeting a title");if($("ud").value<T0)return toast("Pick today or a future date");S.upcoming.push({id:S.nid++ +1000,title:t,date:$("ud").value,time:$("uh").value,src:$("us").value,remind:true});L("Scheduled: "+t);toast("Meeting added · reminder on 🔔");route()}
+function impICS(){const evs=$("ics").value.split("BEGIN:VEVENT").slice(1);let n=0;evs.forEach(e=>{const s=(e.match(/SUMMARY:(.*)/)||[])[1],d=(e.match(/DTSTART[^:]*:(\d{8})(?:T(\d{2})(\d{2}))?/)||[]);if(s&&d[1]){S.upcoming.push({id:S.nid++ +1000,title:s.trim(),date:`${d[1].slice(0,4)}-${d[1].slice(4,6)}-${d[1].slice(6,8)}`,time:d[2]?`${d[2]}:${d[3]}`:"09:00",src:"Calendar",remind:true});n++}});
+ if(!n)return toast("No events found in that text");L(`Imported ${n} event(s) from .ics`);toast(`Imported ${n} event(s)`);route()}
+V.library=()=>{const q=(S.q||"").toLowerCase(),tg=S.tag||"",tags=[...new Set(S.meetings.flatMap(m=>m.tags))];
+ const ms=S.meetings.filter(m=>(!tg||m.tags.includes(tg))&&(!q||(m.title+" "+m.tr).toLowerCase().includes(q))).sort((a,b)=>a.date<b.date?1:-1);
+ return`<div class="card"><div class="row"><input id="lq" placeholder="Search titles and transcripts…" value="${esc(S.q||"")}" onkeydown="if(event.key=='Enter'){S.q=this.value;route()}"><select style="max-width:180px" onchange="S.tag=this.value;route()"><option value="">All tags</option>${tags.map(t=>`<option ${t==tg?"selected":""}>${t}</option>`).join("")}</select><button style="margin:0;flex:0 0 auto" onclick="S.q=$('lq').value;route()">Search</button></div>
+ <p class="muted">${ms.length} meeting(s)</p>${ms.map(m=>`<div style="border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer" onclick="go('meeting?id=${m.id}')"><b>${esc(m.title)}</b> <span class="muted">${fd(m.date)} · ${m.time} · ${m.src} · ${m.dur} min</span><br>${m.tags.map(tagP).join("")}<p class="muted" style="margin:6px 0 0">${esc(m.summary)}</p>${q?`<p style="margin:4px 0 0;font-size:13px">…${esc((m.tr.toLowerCase().indexOf(q)>=0?m.tr.substr(Math.max(0,m.tr.toLowerCase().indexOf(q)-40),110):""))}…</p>`:""}</div>`).join("")||"<p class='muted'>No matches.</p>"}</div>`};
+V.meeting=()=>{const id=(location.hash.match(/id=(\d+)/)||[])[1],m=M(id)||S.meetings[0];if(!m)return`<div class="card"><p class="muted">No meetings yet.</p></div>`;
+ return`<div class="card"><a href="#/library" class="muted">← Library</a><h1 style="margin:6px 0">${esc(m.title)}</h1><span class="muted">${fd(m.date)} · ${m.time} · ${m.src} · ${m.dur} min · ${m.sp.join(", ")}</span><div>${m.tags.map(tagP).join("")} <button class="ghost" style="margin:0;padding:3px 10px" onclick="addTag(${m.id})">＋ tag</button> <button class="ghost" style="margin:0;padding:3px 10px" onclick="copyN(${m.id})">📋 Copy notes</button> <button class="ghost" style="margin:0;padding:3px 10px" onclick="if(confirm('Delete this meeting?')){S.meetings=S.meetings.filter(x=>x.id!=${m.id});go('library')}">🗑 Delete</button></div></div>
+ <div class="grid"><div class="card"><h2>Summary</h2><p>${esc(m.summary)}</p><p class="muted">Keywords: ${m.kw.map(k=>`<b>${esc(k)}</b>`).join(", ")}</p>
+ <h2>Decisions</h2><ul>${m.dec.map(d=>`<li>${esc(d)}</li>`).join("")||"<li class='muted'>None recorded</li>"}</ul>
+ <h2>Open questions</h2><ul>${m.qs.map(q=>`<li>${esc(q.tx)} <span class="muted">(${esc(q.sp)})</span></li>`).join("")||"<li class='muted'>None</li>"}</ul>
+ <h2>Action items</h2>${m.acts.map((a,i)=>`<div style="display:flex;gap:8px;align-items:center;padding:4px 0"><input type="checkbox" style="width:auto" ${a.done?"checked":""} onchange="doneA(${m.id},${i},this.checked)"><span style="flex:1;${a.done?"text-decoration:line-through;opacity:.6":""}">${esc(a.t)}</span><input value="${esc(a.owner)}" style="max-width:100px;padding:4px" onchange="M(${m.id}).acts[${i}].owner=this.value;save()"><input value="${esc(a.due)}" placeholder="due" style="max-width:110px;padding:4px" onchange="M(${m.id}).acts[${i}].due=this.value;save()"></div>`).join("")||"<p class='muted'>None</p>"}
+ <button class="ghost" onclick="const t=prompt('New action item');if(t){M(${m.id}).acts.push({t,owner:S.me,due:'',done:false});route()}">＋ Add action item</button></div>
+ <div class="card"><h2>Transcript</h2><div style="max-height:520px;overflow:auto">${m.turns.map(t=>`<div style="padding:6px 0;border-bottom:1px solid var(--line)"><b style="color:var(--cocoa)">${esc(t.sp)}</b><br>${esc(t.tx)}</div>`).join("")}</div></div></div>`};
+function addTag(id){const t=prompt("Tag name");if(t&&t.trim()){M(id).tags.push(t.trim().toLowerCase().replace(/\s+/g,"-"));route()}}
+function copyN(id){const m=M(id),txt=`${m.title} (${m.date})\n\nSummary: ${m.summary}\n\nDecisions:\n${m.dec.map(d=>"- "+d).join("\n")}\n\nAction items:\n${m.acts.map(a=>`- [${a.done?"x":" "}] ${a.t} (${a.owner}${a.due?", "+a.due:""})`).join("\n")}`;try{navigator.clipboard.writeText(txt);toast("Notes copied 📋")}catch(e){openM(`<pre>${esc(txt)}</pre>`)}}
+V.new=()=>`<div class="grid"><div class="card"><h2>New notes from a transcript</h2><label>Meeting title</label><input id="nt" placeholder="e.g. Sprint planning"><div class="row"><div><label>Date</label><input id="ndt" type="date" value="${T0}"></div><div><label>Platform</label><select id="nsrc"><option>Zoom</option><option>Google Meet</option><option>Teams</option><option>In person</option></select></div></div>
+ <label>Transcript (one line per speaker turn, "Name: text")</label><textarea id="ntr" style="min-height:220px">Alex: Let's review the launch checklist.
+Bea: Landing page copy is done. I will publish it by Thursday.
+Alex: We agreed to delay the webinar to next month.
+Chris: Do we have the pricing page ready?
+Bea: Action for Chris: finalize pricing by Monday.</textarea>
+ <button onclick="prev()">Generate notes</button> <button class="ghost" onclick="saveN()">Save to library</button></div><div class="card"><h2>Preview</h2><div id="np" class="muted">Click Generate notes. Everything runs in your browser, so the transcript never leaves this page.</div></div></div>`;
+function prev(){const tr=$("ntr").value.trim();if(tr.split("\n").length<2)return toast("Paste at least two lines of transcript");const p=parse(tr);
+ $("np").innerHTML=`<p><b>Summary:</b> ${esc(p.summary)}</p><p><b>Decisions</b></p><ul>${p.dec.map(d=>`<li>${esc(d)}</li>`).join("")||"<li>None</li>"}</ul><p><b>Action items</b></p><ul>${p.acts.map(a=>`<li>${esc(a.t)} <span class="pill low">${esc(a.owner)}</span>${a.due?` <span class="pill medium">${esc(a.due)}</span>`:""}</li>`).join("")||"<li>None</li>"}</ul><p><b>Questions</b></p><ul>${p.qs.map(q=>`<li>${esc(q.tx)}</li>`).join("")||"<li>None</li>"}</ul><p class="muted">Keywords: ${p.kw.join(", ")}</p>`;return p}
+function saveN(){const t=$("nt").value.trim(),tr=$("ntr").value.trim();if(!t)return toast("Add a meeting title");if(tr.split("\n").length<2)return toast("Paste a transcript first");const m=mk(S.nid++,t,$("ndt").value,new Date().toTimeString().slice(0,5),["new"],tr,$("nsrc").value);S.meetings.push(m);L("Notes created: "+t);toast("Saved to library ✓");go("meeting?id="+m.id)}
+V.actions=()=>{const f=S.owner||"",as=allActs().filter(a=>!f||a.owner==f),owners=[...new Set(allActs().map(a=>a.owner))];
+ const col=(done)=>as.filter(a=>a.done==done).map(a=>`<div style="border:1px solid var(--line);border-radius:10px;padding:10px;margin:6px 0;background:var(--card)"><label style="display:flex;gap:8px;font-weight:500;color:var(--ink)"><input type="checkbox" style="width:auto" ${a.done?"checked":""} onchange="doneA(${a.mid},${a.i},this.checked)">${esc(a.t)}</label><span class="pill low">${esc(a.owner)}</span>${a.due?`<span class="pill medium">due ${esc(a.due)}</span>`:""} <a class="muted" href="#/meeting?id=${a.mid}">${esc(a.mt)}</a></div>`).join("")||"<p class='muted'>Empty</p>";
+ return`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Action items</h2><select style="width:auto" onchange="S.owner=this.value;route()"><option value="">Everyone</option>${owners.map(o=>`<option ${o==f?"selected":""}>${esc(o)}</option>`).join("")}</select></div></div>
+ <div class="grid"><div class="card"><h2>Open (${as.filter(a=>!a.done).length})</h2>${col(false)}</div><div class="card"><h2>Done (${as.filter(a=>a.done).length})</h2>${col(true)}</div></div>`};
+V.desktop=()=>`<div class="grid"><div class="card"><h2>🖥 The MeetingScribe desktop app</h2><p>A small tray app for Windows and Mac that runs quietly in the background:</p><ul><li>🎙 Captures your microphone <b>and</b> system audio, so it works with Zoom (any account), Meet, Teams or in person</li><li>🧠 Transcribes locally with <b>faster-whisper</b></li><li>📝 Summarizes locally with <b>Ollama (Llama 3.1 8B)</b>: notes, decisions and action items</li><li>📅 Reads your calendar (.ics) and reminds you before meetings</li><li>📂 Saves notes to a folder you choose. Point it at a synced Drive folder to read them on a tablet</li></ul></div>
+ <div class="card"><h2>🔒 Privacy by design</h2><p>Audio and transcripts never leave your computer. There are no cloud APIs and no per-minute costs. This web companion also runs entirely in your browser.</p><h2>Setup</h2><ol><li>Install Python 3.11 and Ollama, then run <code>ollama pull llama3.1:8b</code></li><li>Run the installer. It adds a Startup shortcut</li><li>Choose your notes folder and calendar link in <i>Settings</i></li><li>Join a meeting. The tray icon turns red while recording</li></ol></div></div>`;
+V.settings=()=>`<div class="grid"><div class="card"><h2>Preferences</h2><label>Your name (default action-item owner)</label><input value="${esc(S.me)}" onchange="S.me=this.value;save();toast('Saved')"><label>Reminder lead time (minutes)</label><input type="number" min="1" max="60" value="${S.remindMin}" onchange="S.remindMin=Math.min(60,Math.max(1,+this.value));save();toast('Saved')">
+ <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" style="width:auto" ${S.autoNotes?"checked":""} onchange="S.autoNotes=this.checked;save()"> Auto-generate notes when a recording ends</label></div>
+ <div class="card"><h2>Data</h2><button onclick="const b=new Blob([JSON.stringify(S.meetings,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=window.URL.createObjectURL(b);a.download='meetingscribe-notes.json';a.click();toast('Exported')">Export all notes (JSON)</button><h2 style="margin-top:14px">Activity</h2>${S.log.slice(0,10).map(l=>`<div class="muted">${l.t} · ${esc(l.m)}</div>`).join("")||"<p class='muted'>—</p>"}</div></div>`;
+function badge(r){if(r=="actions")return allActs().filter(a=>!a.done).length||"";if(r=="upcoming")return S.upcoming.filter(u=>u.date==T0).length||"";return""}
+function onRoute(r){if(r=="meeting")document.querySelector('.side a[data-r="library"]').classList.add("on")}
+
+
+const $=i=>document.getElementById(i);const esc=s=>String(s??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const KEY="meetingscribeDemo";let S;try{S=JSON.parse(localStorage.getItem(KEY))||SEED()}catch(e){S=SEED()}if(!S.log)S.log=[];
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function toast(m){const t=$("toast");t.innerHTML=m;t.classList.add("show");clearTimeout(t._);t._=setTimeout(()=>t.classList.remove("show"),3000)}
+function L(m){S.log.unshift({t:new Date().toLocaleString("en-US",{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}),m});if(S.log.length>200)S.log.length=200}
+function openM(h){$("mbody").innerHTML=h;$("modal").classList.add("show")}function closeM(){$("modal").classList.remove("show")}
+function go(r){location.hash="#/"+r}
+function route(){const r=(location.hash.replace("#/","").split("?")[0]||Object.keys(V)[0]);document.querySelectorAll(".side a").forEach(a=>a.classList.toggle("on",a.dataset.r==r));
+ try{$("view").innerHTML=(V[r]||V[Object.keys(V)[0]])()}catch(e){console.error(e);$("view").innerHTML='<div class="card"><h2>Something went wrong</h2><p class="muted">'+esc(e.message)+'</p></div>'}
+ document.querySelectorAll("[data-b]").forEach(b=>{const v=typeof badge=="function"?badge(b.dataset.b):"";b.textContent=v||"";b.style.display=v?"":"none"});
+ if(typeof onRoute=="function")onRoute(r);save()}
+function resetAll(){S=SEED();S.log=S.log||[];save();toast("Demo data reset");route()}
+function toggleTheme(){const h=document.documentElement,n=h.dataset.theme=="dark"?"light":"dark";h.dataset.theme=n;try{localStorage.setItem("demoTheme",n)}catch(e){}$("themeBtn").textContent=n=="dark"?"☀️ Light":"🌙 Dark"}
+try{const t=localStorage.getItem("demoTheme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;$("themeBtn").textContent=t=="dark"?"☀️ Light":"🌙 Dark"}catch(e){}
+addEventListener("hashchange",route);addEventListener("keydown",e=>{if(e.key=="Escape")closeM()});route();
+
+</script></body></html>
